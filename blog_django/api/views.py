@@ -42,7 +42,24 @@ class miembroView(View):
         Miembro.objects.create(nombre = jd['nombre'],apellido = jd['apellido'],email = jd ['email'])
         datos = {'message':"Encontrados!"}
         return JsonResponse(datos)
-    def putt(self, request):
-        pass
-    def delete(self,request):
-        pass
+    def put(self, request,id):
+        jd=json.loads(request.body)
+        miembros=list(Miembro.objects.filter(id=id).values())
+        if len (miembros)>0:
+            miembro = Miembro.objects.get(id=id)
+            miembro.nombre = jd['nombre']
+            miembro.apellido = jd['apellido']
+            miembro.email = jd['email']
+            miembro.save()
+            datos = {'message':"Modificado!"}
+        else:
+            datos = {'message':"miembros no encontrados"}
+        return JsonResponse(datos)
+    def delete(self,request,id):
+        miembros=list(Miembro.objects.filter(id=id).values())
+        if len (miembros)>0:
+            Miembro.objects.filter(id=id).delete()
+            datos = {'message':"Eliminado!"}
+        else: 
+            datos = {'message':"miembros no encontrados"}
+        return JsonResponse(datos)
