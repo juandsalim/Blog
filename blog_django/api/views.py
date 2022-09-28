@@ -15,13 +15,25 @@ class miembroView(View):
     def dispatch(self, request , *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request):
-        miembros = list(Miembro.objects.values()) #se obtiene una lista de python
-        if len(miembros)>0:
-            datos = {'message':"Encontrados!",'miembros':miembros} #creo un diccionario que muestra un mensaje y los miembros
-        else:
-            datos = {'message':"miembros no encontrados"}
-        return JsonResponse(datos)
+    def get(self, request,id=0):
+        if(id>0):
+            miembros=list(Miembro.objects.filter(id=id).values())
+            if len (miembros)>0:
+                miembro= miembros[0]
+                datos = {'message':"Encontrados!",'miembros':miembro}
+                return JsonResponse(datos)
+
+            else:
+                datos = {'message':"miembros no encontrados"}
+                return JsonResponse(datos)
+
+        else:  
+            miembros = list(Miembro.objects.values()) #se obtiene una lista de python
+            if len(miembros)>0:
+                datos = {'message':"Encontrados!",'miembros':miembros} #creo un diccionario que muestra un mensaje y los miembros
+            else:
+                datos = {'message':"miembros no encontrados"}
+            return JsonResponse(datos)
 
     def post(self, request):
         #print(request.body)
